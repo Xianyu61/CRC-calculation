@@ -1,0 +1,54 @@
+module crc_tp(
+    input clk,
+    input rxd,
+    output txd,
+	 input button,
+	 output reg [7:0] tx_data,
+	 output reg tx_data_en  
+);
+
+wire rx_data_en;
+wire [7:0] rx_data;
+initial begin
+	tx_data_en <= 1'b1;
+end
+
+reg crc_vld;
+reg din_tmp;
+reg cnt;
+reg pro_flag;
+wire crc_o;
+
+
+always @(posedge clk) begin
+    tx_data=1;
+	 tx_data_en=1;
+end
+
+uart_receive inst1(
+    .clk(clk),
+    .rx(rxd),
+    .data_en(rx_data_en),
+    .data_out(rx_data)
+);
+
+uart_send inst2(
+    .clk(clk),
+    .rst(1'b0),
+    .data_in(tx_data),
+    .data_en(tx_data_en),
+    .tx(txd),
+    .busy()
+);
+
+crc_8 inst3(
+	.clk(clk),
+   .rst_n(button),
+   .din(rx_data),
+   .crc_start(crc_start),
+   .crc_o(crc_o)
+);
+
+
+
+endmodule

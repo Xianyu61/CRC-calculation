@@ -1,0 +1,51 @@
+`timescale 1ns / 1ps
+
+module tb_crc(
+    );
+			 
+          reg clk;
+          reg rst_n;
+          reg [63:0]din;
+          wire crc_vld;
+          wire[7:0]crc_o;
+
+always #10 clk = ~clk;
+
+initial begin
+    clk = 1'b0; 
+    rst_n =1'b0;
+    din = 64'd0;
+    crc_start = 1'b0;
+    
+    //给激励信号
+    #103 //错开clk和rst的沿
+        rst_n = 1'b1;
+     @(posedge clk);//等待一个时钟的上升沿
+     @(posedge clk)begin
+            din = 64'h1234567812345678;//8x4x4 = 64位二进制位
+        end
+
+       
+       //等结果
+//       @(posedge crc_vld)begin
+//        #2//为了采集准确的上升沿，crc_o向后延
+//            if(crc_o == 8'h12)//16进制1个数4位
+//                $fdisplay ("Correct");
+//            else
+//                $fdisplay ("Incorrect");
+//       end 
+       
+      // #1000
+        //    $stop;
+    end
+crc crc_u(
+          .clk(clk),
+          .rst_n(rst_n),
+          .din(din),
+          .crc_vld(crc_vld),
+          .crc_o(crc_o),
+          .crc_cnt(crc_cnt)
+);
+endmodule
+
+

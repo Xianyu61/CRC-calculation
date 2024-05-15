@@ -1,0 +1,57 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dD:/xizichen/crc
+vcrc
+!s110 1714128222
+!i10b 1
+!s100 @f5P1fCnGjlGPV>aVBbhZ2
+Z0 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I5dOTIeR<0klez>OcWd?o61
+Z1 VDg1SIo80bB@j0V0VzS_@n1
+Z2 dD:/xizichen/crctest
+w1714128151
+8D:/xizichen/crctest/crc.v
+FD:/xizichen/crctest/crc.v
+!i122 42
+L0 3 52
+Z3 OV;L;2020.1;71
+r1
+!s85 0
+31
+!s108 1714128222.000000
+!s107 D:/xizichen/crctest/crc.v|
+!s90 -reportprogress|300|-work|work|D:/xizichen/crctest/crc.v|
+!i113 1
+Z4 o-work work
+Z5 tCvgOpt 0
+vtb_crc
+!s110 1714128500
+!i10b 1
+!s100 S5eE1oOR=W``K2>@4_ao[1
+R0
+I<5KeV:4X4_kcC?6??;lQT3
+R1
+R2
+w1714128492
+8D:/xizichen/crctest/crc_tb.v
+FD:/xizichen/crctest/crc_tb.v
+!i122 45
+L0 2 59
+R3
+r1
+!s85 0
+31
+!s108 1714128500.000000
+!s107 D:/xizichen/crctest/crc_tb.v|
+!s90 -reportprogress|300|-work|work|D:/xizichen/crctest/crc_tb.v|
+!i113 1
+R4
+R5

@@ -1,0 +1,139 @@
+`timescale 1ns / 1ps
+//
+module crc(clk,rst_n,data,data_valid,crc_start,crc_out,crc_valid,crc_out_parallel);
+input clk,rst_n;
+input data;  //串行输入数据
+input data_valid; //串行数据有效标识；
+input crc_start;
+
+output wire crc_out;
+output reg [7:0] crc_out_parallel;
+ 
+output reg crc_valid;
+
+parameter idle = 3'b001;
+parameter crc_cal = 3'b010;
+parameter crc_output = 3'b100;
+parameter polynomial = 8'b0000_0111;
+
+reg [2:0] current_state,next_state;
+
+always@(posedge clk or negedge rst_n)
+begin 
+if(rst_n==1'b0)
+  
+	  current_state<=idle;
+else 
+      current_state<=next_state;
+end 
+
+reg [5:0] cnt_in;
+reg [2:0] cnt_out;
+ 
+always@(*)
+begin 
+        case(current_state)
+	        idle :    
+			       if(crc_start==1'b1)
+				        next_state = crc_cal;
+				   else 
+				        next_state = idle;
+		    crc_cal:
+			       if(cnt_in==6'd32)
+				        next_state = crc_output;
+				   else 
+				        next_state = crc_cal;
+			crc_out:
+			       if(cnt_out==3'd7)
+				        next_state = idle;
+				   else 
+				        next_state = crc_output;
+		endcase
+end 
+
+always@(posedge clk or negedge rst_n)  //计数输入
+begin 
+if(rst_n==1'b0)
+    cnt_in<=6'd0;
+else if(current_state==crc_cal)
+    begin
+       if(cnt_in==6'd32)
+	      cnt_in<=6'd0;
+	   else if(data_valid==1'b1)
+	      cnt_in<=cnt_in+1'd1;
+	   else 
+	      cnt_in<=cnt_in;
+    end 
+else  
+    cnt_in<=6'd0;   
+end 
+
+//mothed 1 :lsfr_reg calculate crc
+reg [7:0] lsfr_reg; 
+reg [7:0] lsfr_reg1;
+
+always@(posedge clk or negedge rst_n)
+begin 
+if(rst_n==1'b0)
+    lsfr_reg<=7'b0;
+else if(current_state==crc_cal)
+    begin 
+	     lsfr_reg[0]<=lsfr_reg[7]^data;
+		 lsfr_reg[1]<=lsfr_reg[7]^data^lsfr_reg[0];
+		 lsfr_reg[2]<=lsfr_reg[7]^data^lsfr_reg[1];
+		 lsfr_reg[3]<=lsfr_reg[2];
+    	 lsfr_reg[4]<=lsfr_reg[3];
+		 lsfr_reg[5]<=lsfr_reg[4];
+		 lsfr_reg[6]<=lsfr_reg[5];
+		 lsfr_reg[7]<=lsfr_reg[6];
+		 lsfr_reg1<=lsfr_reg;
+	end 
+end
+
+always@(posedge clk or negedge rst_n)
+begin 
+if(rst_n==1'b0)
+   crc_valid<=1'b0;
+else if(current_state==crc_output)
+  begin
+   if(cnt_out==3'd7)
+      crc_valid<=1'b0;
+   else 
+      crc_valid<=1'b1;
+   end 
+ end 
+ 
+always@(posedge clk or negedge rst_n)
+begin 
+if(rst_n==1'b0)
+   begin 
+    cnt_out<=1'b0;
+   end
+    
+else if(crc_valid==1'b1)
+    begin
+    if(cnt_out==3'd7)
+       cnt_out<=3'd7;
+    else 
+       cnt_out<=cnt_out+1'd1;
+    end 
+end
+ assign crc_out = crc_valid?(lsfr_reg1[7-cnt_out]):1'b0;     
+   
+// mothed 2 : serial calculate
+
+always@(posedge clk or negedge rst_n)
+begin 
+if(rst_n==1'b0)
+    crc_out_parallel<=8'b0;
+else if(current_state==crc_cal)
+    begin 
+	   if(data_valid==1'b1)
+	      crc_out_parallel<=({crc_out_parallel[6:0],1'b0})^({8{(crc_out_parallel[7]^data)}}& polynomial);
+	   else  
+	      crc_out_parallel<=crc_out_parallel;
+	end 
+end
+
+endmodule 
+   

@@ -1,0 +1,112 @@
+module crc_tb;
+
+reg clk,rst_n;
+reg data_valid;
+reg crc_start;
+reg data;
+
+wire crc_out;
+wire crc_valid;
+wire [7:0] crc_out_parallel;
+
+parameter clock_period = 20;
+
+initial clk = 1'b1;
+always #(clock_period/2) clk = ~clk;
+
+initial 
+      begin 
+	     rst_n = 1'b0;
+		 crc_start = 1'b0;
+         data_valid = 1'b0;
+         data = 1'b0;
+         #(20*clock_period) 
+         rst_n = 1'b1;
+         # clock_period
+         crc_start = 1'b1;
+         # clock_period
+         crc_start = 1'b0; 
+          
+		 # clock_period
+		 data = 1'b1;data_valid=1'b1;
+		 # clock_period
+		 data = 1'b0;data_valid=1'b1;
+		 # clock_period
+		 data = 1'b1;data_valid=1'b1;
+		 # clock_period
+		 data = 1'b1;data_valid=1'b1;
+         # clock_period
+		 data = 1'b1;data_valid=1'b1;
+		 # clock_period
+		 data = 1'b0;data_valid=1'b1;
+		 # clock_period
+		 data = 1'b1;data_valid=1'b1;
+		 # clock_period
+		 data = 1'b1;data_valid=1'b1;
+		 		
+         # clock_period
+         data = 1'b0;data_valid=1'b1;
+        # clock_period
+        data = 1'b0;data_valid=1'b1;
+        # clock_period
+        data = 1'b0;data_valid=1'b1;
+        # clock_period
+        data = 1'b1;data_valid=1'b1;
+        # clock_period
+        data = 1'b0;data_valid=1'b1;
+        # clock_period
+        data = 1'b0;data_valid=1'b1;
+        # clock_period
+        data = 1'b0;data_valid=1'b1;
+        # clock_period
+        data = 1'b1;data_valid=1'b1;
+         
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period        
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        
+        # clock_period              
+        data = 1'b0;data_valid=1'b1;
+        # clock_period              
+        data = 1'b0;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period        
+        data = 1'b0;data_valid=1'b1;
+        # clock_period              
+        data = 1'b0;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period              
+        data = 1'b1;data_valid=1'b1;
+        # clock_period
+		 data = 1'b0;data_valid=1'b0;
+		
+		 #(20*clock_period)
+		 $stop;
+	  end 
+
+crc inst(.clk(clk),
+         .rst_n(rst_n),
+         .data(data),
+         .data_valid(data_valid),
+         .crc_start(crc_start),
+         .crc_out(crc_out),
+         .crc_valid(crc_valid),
+         .crc_out_parallel(crc_out_parallel));
+endmodule
